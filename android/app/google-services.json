@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "535069151894",
+    "project_id": "visionhr-e0816",
+    "storage_bucket": "visionhr-e0816.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535069151894:android:9080256dfdf23c9e4ce8b7",
+        "android_client_info": {
+          "package_name": "com.example.visionhr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCadQPu2EROedXETboYJ50ND80SNhmNrkA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
