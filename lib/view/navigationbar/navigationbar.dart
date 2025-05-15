@@ -38,44 +38,40 @@ class _NavigationbarState extends State<Navigationbar> {
       onWillPop: () async {
         return false;
       },
-      child: SafeArea(
-        child: Scaffold(
-          body: SafeArea(
-            child: Center(
-              child: pages[_currentIndex],
+      child: Scaffold(
+        body: Center(
+          child: pages[_currentIndex],
+        ),
+        bottomNavigationBar: CurvedNavigationBar(
+          index: _currentIndex,
+          height: 60.0,
+          backgroundColor: AppColors.nbgcolr,
+          buttonBackgroundColor: AppColors.orange,
+          color: AppColors.bgcolr,
+          animationDuration: const Duration(milliseconds: 300),
+          onTap: (int newIndex) {
+            setState(() {
+              _currentIndex = newIndex;
+            });
+          },
+          items: [
+            ImageIcon(
+              AssetImage('assets/scannericon.png'),
+              color: _currentIndex == 2 ? Colors.white : AppColors.txtcolr,
             ),
-          ),
-          bottomNavigationBar: CurvedNavigationBar(
-            index: _currentIndex,
-            height: 60.0,
-            backgroundColor: AppColors.nbgcolr,
-            buttonBackgroundColor: AppColors.orange,
-            color: AppColors.bgcolr,
-            animationDuration: const Duration(milliseconds: 300),
-            onTap: (int newIndex) {
-              setState(() {
-                _currentIndex = newIndex;
-              });
-            },
-            items: [
-              ImageIcon(
-                AssetImage('assets/scannericon.png'),
-                color: _currentIndex == 2 ? Colors.white : AppColors.txtcolr,
-              ),
-              ImageIcon(
-                AssetImage('assets/Icon (1).png'),
-                color: _currentIndex == 2 ? Colors.white : AppColors.txtcolr,
-              ),
-              ImageIcon(
-                AssetImage('assets/Icon (2).png'),
-                color: _currentIndex == 2 ? Colors.white : AppColors.txtcolr,
-              ),
-              ImageIcon(
-                AssetImage('assets/Icon (3).png'),
-                color: _currentIndex == 3 ? Colors.white : AppColors.txtcolr,
-              ),
-            ],
-          ),
+            ImageIcon(
+              AssetImage('assets/Icon (1).png'),
+              color: _currentIndex == 2 ? Colors.white : AppColors.txtcolr,
+            ),
+            ImageIcon(
+              AssetImage('assets/Icon (2).png'),
+              color: _currentIndex == 2 ? Colors.white : AppColors.txtcolr,
+            ),
+            ImageIcon(
+              AssetImage('assets/Icon (3).png'),
+              color: _currentIndex == 3 ? Colors.white : AppColors.txtcolr,
+            ),
+          ],
         ),
       ),
     );
