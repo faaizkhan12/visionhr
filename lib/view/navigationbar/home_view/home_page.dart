@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:visionhr/view/navigationbar/view/measurement.dart';
+import 'package:visionhr/view/notifaction/notifaction.dart';
 import 'package:visionhr/widgets/roundedButton.dart';
 
 import '../../../utils/colors.dart';
 import '../../../widgets/reusetext.dart';
+import 'measurement.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                 children: [
                   GestureDetector(
                     onTap: () => Get.back(),
@@ -46,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                     color: AppColors.txtcolr,
                   ),
                   GestureDetector(
-                   // onTap: () => Get.back(),
+                    onTap: () => Get.to(Notifaction()),
                     child: Container(
                       height: 32.h,
                       width: 32.w,

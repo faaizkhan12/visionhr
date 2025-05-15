@@ -1,7 +1,10 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:visionhr/view/navigationbar/view/home_page.dart';
+import 'package:visionhr/view/navigationbar/view/faq.dart';
+import 'package:visionhr/view/navigationbar/view/history.dart';
+import 'package:visionhr/view/navigationbar/view/setting.dart';
 import '../../utils/colors.dart';
+import 'home_view/home_page.dart';
 
 const TextStyle _textStyle = TextStyle(
   fontSize: 38,
@@ -81,9 +84,9 @@ class _NavigationbarState extends State<Navigationbar> {
   List<Widget> get pages {
     return [
       const HomePage(),
-      const Text("Page 2"),
-      const Text("Page 3"),
-      const Text("Page 4"),
+      const History(),
+      const FAQPage(),
+      const Setting(),
     ];
   }
 }

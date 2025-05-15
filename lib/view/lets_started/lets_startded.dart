@@ -13,34 +13,34 @@ class Lets_Started extends StatefulWidget {
   @override
   State<Lets_Started> createState() => _Lets_StartedState();
 }
+
 class _Lets_StartedState extends State<Lets_Started> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgcolr, // Dark background like the design
+      backgroundColor: const Color(0xff17181f),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Back Button
-              Align(
-                alignment: Alignment.topLeft,
-                child: GestureDetector(
-                  onTap: () => Get.back(),
-                  child: Container(
-                    height: 32.h,
-                    width: 32.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: AppColors.nbgcolr,
-                    ),
-                    child: Icon(Icons.arrow_back, size: 18, color: AppColors.txtcolr),
+
+              GestureDetector(
+                onTap: () => Get.back(),
+                child: Container(
+                  height: 30.h,
+                  width: 30.w,
+                  margin: EdgeInsets.only(top: 10.h),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: AppColors.nbgcolr,
                   ),
+                  child: Icon(Icons.arrow_back, size: 18, color: AppColors.txtcolr),
                 ),
               ),
 
-              SizedBox(height: 20.h),
+              SizedBox(height: 10.h),
 
               /// Title
               Center(
@@ -53,16 +53,14 @@ class _Lets_StartedState extends State<Lets_Started> {
               ),
 
               SizedBox(height: 20.h),
-
-              /// Stack with image and text at bottom
               Stack(
-                alignment: Alignment.center,
                 children: [
-                  Container(
-                    height: 400,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
                     child: Image.asset(
                       "assets/bg.png",
                       width: double.infinity,
+                      height: 550.h,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -77,19 +75,26 @@ class _Lets_StartedState extends State<Lets_Started> {
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.txtcolr,
-
                       ),
                     ),
                   ),
-                  Center(
-                    child: RoundedButton(text: "OK, Got it!",color: AppColors.orange, onTap: (){
-                      Get.to(Navigationbar());
-                    }),
-                  )
                 ],
               ),
 
+              SizedBox(height: 30.h),
 
+              /// Button
+              Center(
+                child: RoundedButton(
+                  text: "OK, Got it!",
+                  color: AppColors.orange,
+                  onTap: () {
+                    Get.to(() => Navigationbar());
+                  },
+                ),
+              ),
+
+              SizedBox(height: 20.h),
             ],
           ),
         ),

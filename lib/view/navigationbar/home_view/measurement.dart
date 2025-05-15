@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:visionhr/view/navigationbar/home_view/result.dart';
 import '../../../utils/colors.dart';
 import '../../../widgets/reusetext.dart';
 import '../../../widgets/roundedButton.dart';
@@ -139,8 +140,8 @@ class _MeasurementState extends State<Measurement> {
                   GestureDetector(
                     onTap: () => Get.back(),
                     child: Container(
-                      height: 32.h,
-                      width: 32.w,
+                      height: 30.h,
+                      width: 30.w,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                         color: AppColors.nbgcolr,
@@ -208,7 +209,9 @@ class _MeasurementState extends State<Measurement> {
 
               const Spacer(),
 
-              RoundedButton(text: "Ok, Let's Start", onTap: () {}),
+              Center(child: RoundedButton(text: "Ok, Let's Start", onTap: () {
+                Get.to(Result());
+              })),
             ],
           ),
         ),
