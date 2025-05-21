@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 import '../../utils/colors.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/reusetext.dart';
 import '../../widgets/roundedButton.dart';
 import '../../widgets/txtfield.dart';
@@ -83,16 +85,32 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                   Center(
                     child: RoundedButton(
                       color: AppColors.orange,
-                      text: "Send OTP Code",
-                      onTap: () {
+                      text: "Send Password Reset Email",
+                      onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          Get.to(() => OtpScreen());
+                          CustomLoader.showLoadingDialog(context, message: "Sending reset email...");
+                          try {
+                            await FirebaseAuth.instance.sendPasswordResetEmail(
+                              email: email.text.trim(),
+                            );
+
+                            CustomLoader.hideLoadingDialog(context);
+                            Get.snackbar(
+                              "Success",
+                              "If this email is registered, you will receive a password reset link. Please check your inbox.",
+                            );
+                          } on FirebaseAuthException catch (e) {
+                            CustomLoader.hideLoadingDialog(context);
+                            String message = e.message ?? "Failed to send reset email.";
+                            Get.snackbar("Error", message, colorText: Colors.red);
+                          }
                         } else {
                           Get.snackbar("Error", "Please enter a valid email.");
                         }
                       },
                     ),
                   ),
+
 
                   SizedBox(height: 25.h),
                 ],

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,12 +8,14 @@ import 'package:visionhr/view/auth/signup_screen.dart';
 
 import '../../controller/auth_controller.dart' as controller;
 import '../../utils/colors.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/reusetext.dart';
 import '../../widgets/roundedButton.dart';
 import '../../widgets/socialbutton.dart';
 import '../../widgets/txtfield.dart';
 import '../onbording_screen/onbording_screen.dart';
 import 'forgotpassword.dart';
+
 class SiginScreen extends StatefulWidget {
   const SiginScreen({Key? key}) : super(key: key);
 
@@ -21,7 +24,6 @@ class SiginScreen extends StatefulWidget {
 }
 
 class _SiginScreenState extends State<SiginScreen> {
-
   final authController = Get.put(controller.AuthController());
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -32,7 +34,7 @@ class _SiginScreenState extends State<SiginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(20.w),
@@ -52,7 +54,11 @@ class _SiginScreenState extends State<SiginScreen> {
                         borderRadius: BorderRadius.circular(50),
                         color: AppColors.nbgcolr,
                       ),
-                      child: Icon(Icons.arrow_back, size: 18, color: AppColors.txtcolr),
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 18,
+                        color: AppColors.txtcolr,
+                      ),
                     ),
                   ),
                   SizedBox(height: 30.h),
@@ -79,8 +85,10 @@ class _SiginScreenState extends State<SiginScreen> {
                     labelText: "Email",
                     showLabelText: true,
                     validator: (value) {
-                      if (value == null || value.isEmpty) return "Email is required";
-                      if (!GetUtils.isEmail(value)) return "Enter a valid email";
+                      if (value == null || value.isEmpty)
+                        return "Email is required";
+                      if (!GetUtils.isEmail(value))
+                        return "Enter a valid email";
                       return null;
                     },
                   ),
@@ -92,8 +100,10 @@ class _SiginScreenState extends State<SiginScreen> {
                     showLabelText: true,
                     showSuffixIcon: true,
                     validator: (value) {
-                      if (value == null || value.isEmpty) return "Password is required";
-                      if (value.length < 6) return "Password must be at least 6 characters";
+                      if (value == null || value.isEmpty)
+                        return "Password is required";
+                      if (value.length < 6)
+                        return "Password must be at least 6 characters";
                       return null;
                     },
                   ),
@@ -102,32 +112,76 @@ class _SiginScreenState extends State<SiginScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           Get.to(Forgotpassword());
                         },
-                          child: ReuseText(data: "Forgot password?",color: AppColors.orange,fontSize: 14,fontWeight: FontWeight.w600,)),
+                        child: ReuseText(
+                          data: "Forgot password?",
+                          color: AppColors.orange,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(height: 25.h),
-
                   Center(
                     child: RoundedButton(
                       color: AppColors.orange,
                       text: "Sign In",
-                      onTap: () {
+                      onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          Get.offAll(() => Onboarding_Screen());
+                          // Show loading dialog
+                          CustomLoader.showLoadingDialog(context);
+
+                          try {
+                            UserCredential userCredential = await FirebaseAuth.instance
+                                .signInWithEmailAndPassword(
+                              email: email.text.trim(),
+                              password: password.text.trim(),
+                            );
+
+                            CustomLoader.hideLoadingDialog(context);
+
+                            Get.offAll(() => Onboarding_Screen());
+                          } on FirebaseAuthException catch (e) {
+                            CustomLoader.hideLoadingDialog(context);
+
+                            String errorMessage = '';
+                            if (e.code == 'user-not-found') {
+                              errorMessage = 'No user found for that email.';
+                            } else if (e.code == 'wrong-password') {
+                              errorMessage = 'Wrong password provided.';
+                            } else {
+                              errorMessage = 'An error occurred. Please try again.';
+                            }
+
+                            Get.snackbar(
+                              "Login Failed",
+                              errorMessage,
+                              colorText: AppColors.txtcolr,
+                            );
+                          } catch (e) {
+                            CustomLoader.hideLoadingDialog(context);
+
+                            Get.snackbar(
+                              "Error",
+                              "Something went wrong.",
+                              colorText: AppColors.txtcolr,
+                            );
+                          }
                         } else {
-                          Get.snackbar("Error", "Please complete the form properly.", colorText: AppColors.txtcolr);
+                          Get.snackbar(
+                            "Error",
+                            "Please complete the form properly.",
+                            colorText: AppColors.txtcolr,
+                          );
                         }
                       },
-
-
                     ),
                   ),
-                  SizedBox(height: 25.h),
 
-                  // Divider
+                  SizedBox(height: 25.h),
                   Row(
                     children: [
                       Expanded(child: Divider(color: AppColors.txtgrey)),
@@ -153,11 +207,6 @@ class _SiginScreenState extends State<SiginScreen> {
                         imagePath: "assets/Google.png",
                         width: 90,
                         onTap: authController.signInWithGoogle,
-                      ),
-                      SocialButton(
-                        imagePath: "assets/fb.png",
-                        width: 90,
-                        onTap: authController.signInWithFacebook,
                       ),
                       SocialButton(
                         imagePath: "assets/apple.png",

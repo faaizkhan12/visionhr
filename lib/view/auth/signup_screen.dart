@@ -3,10 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:visionhr/utils/colors.dart';
 import 'package:visionhr/view/auth/sigin_screen.dart';
+import 'package:visionhr/view/onbording_screen/onbording_screen.dart';
 import 'package:visionhr/widgets/reusetext.dart';
 import 'package:visionhr/widgets/socialbutton.dart';
 import 'package:visionhr/widgets/txtfield.dart';
 import '../../controller/auth_controller.dart' as controller;
+import '../../widgets/loader.dart';
 import '../../widgets/roundedButton.dart';
 
 class SignupScreen extends StatelessWidget {
@@ -43,7 +45,11 @@ class SignupScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(50),
                         color: AppColors.nbgcolr,
                       ),
-                      child: Icon(Icons.arrow_back, size: 18, color: AppColors.txtcolr),
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 18,
+                        color: AppColors.txtcolr,
+                      ),
                     ),
                   ),
                   SizedBox(height: 30.h),
@@ -56,7 +62,8 @@ class SignupScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h),
                   ReuseText(
-                    data: "Create your account and start monitoring your health",
+                    data:
+                        "Create your account and start monitoring your health",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.txtcolr,
@@ -70,8 +77,10 @@ class SignupScreen extends StatelessWidget {
                     labelText: "Email",
                     showLabelText: true,
                     validator: (value) {
-                      if (value == null || value.isEmpty) return "Email is required";
-                      if (!GetUtils.isEmail(value)) return "Enter a valid email";
+                      if (value == null || value.isEmpty)
+                        return "Email is required";
+                      if (!GetUtils.isEmail(value))
+                        return "Enter a valid email";
                       return null;
                     },
                   ),
@@ -85,8 +94,10 @@ class SignupScreen extends StatelessWidget {
                     showLabelText: true,
                     showSuffixIcon: true,
                     validator: (value) {
-                      if (value == null || value.isEmpty) return "Password is required";
-                      if (value.length < 6) return "Password must be at least 6 characters";
+                      if (value == null || value.isEmpty)
+                        return "Password is required";
+                      if (value.length < 6)
+                        return "Password must be at least 6 characters";
                       return null;
                     },
                   ),
@@ -100,49 +111,56 @@ class SignupScreen extends StatelessWidget {
                     showLabelText: true,
                     showSuffixIcon: true,
                     validator: (value) {
-                      if (value != password.text) return "Passwords do not match";
+                      if (value == null || value.isEmpty)
+                        return "Confirm your password";
+                      if (value != password.text)
+                        return "Passwords do not match";
                       return null;
                     },
                   ),
                   SizedBox(height: 10.h),
-                  Obx(() => Row(
-                    children: [
-                      Checkbox(
-                        value: isTermsAccepted.value,
-                        onChanged: (val) {
-                          isTermsAccepted.value = val ?? false;
-                        },
-                        activeColor: AppColors.orange,
-                      ),
-                      Expanded(
-                        child: ReuseText(
-                          richTextSpan: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "I agree to the Vision HR ",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.txtcolr,
-                                ),
-                              ),
-                              TextSpan(
-                                text: "Terms & Conditions",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.orange,
-                                ),
-                              ),
-                            ],
-                          ),
-                          onClick: () {
-                            // Navigate to terms screen
+
+                  // Terms and Conditions Checkbox
+                  Obx(
+                    () => Row(
+                      children: [
+                        Checkbox(
+                          value: isTermsAccepted.value,
+                          onChanged: (val) {
+                            isTermsAccepted.value = val ?? false;
                           },
+                          activeColor: AppColors.orange,
                         ),
-                      ),
-                    ],
-                  )),
+                        Expanded(
+                          child: ReuseText(
+                            richTextSpan: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "I agree to the Vision HR ",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.txtcolr,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "Terms & Conditions",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.orange,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onClick: () {
+                              // Navigate to terms screen
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 15.h),
 
                   // Signup Button
@@ -150,19 +168,41 @@ class SignupScreen extends StatelessWidget {
                     child: RoundedButton(
                       color: AppColors.orange,
                       text: "Sign Up",
-                      onTap: () {
+                      onTap: () async {
                         if (_formKey.currentState!.validate() &&
                             isTermsAccepted.value) {
-                          // Proceed with signup
+                          CustomLoader.showLoadingDialog(context);
+
+                          try {
+                            await authController.registerWithEmail(
+                              email.text.trim(),
+                              password.text.trim(),
+                            );
+                            CustomLoader.hideLoadingDialog(context);
+                            Get.snackbar(
+                              "Success",
+                              "Account created successfully!",
+                            );
+                            Get.to(Onboarding_Screen());
+                          } catch (e) {
+                            CustomLoader.hideLoadingDialog(context);
+                            Get.snackbar(
+                              "Error",
+                              e.toString(),
+                              colorText: Colors.red,
+                            );
+                          }
                         } else {
-                          Get.snackbar("Error", "Please complete the form properly.",colorText: AppColors.txtcolr);
+                          Get.snackbar(
+                            "Error",
+                            "Please complete the form properly.",
+                            colorText: AppColors.txtcolr,
+                          );
                         }
                       },
                     ),
                   ),
                   SizedBox(height: 25.h),
-
-                  // Divider
                   Row(
                     children: [
                       Expanded(child: Divider(color: AppColors.txtgrey)),
@@ -187,12 +227,12 @@ class SignupScreen extends StatelessWidget {
                       SocialButton(
                         imagePath: "assets/Google.png",
                         width: 90,
-                        onTap: authController.signInWithGoogle,
-                      ),
-                      SocialButton(
-                        imagePath: "assets/fb.png",
-                        width: 90,
-                        onTap: authController.signInWithFacebook,
+                        onTap: () {
+                          CustomLoader.showLoadingDialog(context);
+                          authController.signInWithGoogle().whenComplete(() {
+                            CustomLoader.hideLoadingDialog(context);
+                          });
+                        },
                       ),
                       SocialButton(
                         imagePath: "assets/apple.png",
@@ -238,3 +278,6 @@ class SignupScreen extends StatelessWidget {
     );
   }
 }
+
+//
+//

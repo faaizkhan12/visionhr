@@ -9,6 +9,7 @@ import 'package:visionhr/widgets/roundedButton.dart';
 import 'package:visionhr/widgets/socialbutton.dart';
 
 import '../../controller/auth_controller.dart';
+import '../../widgets/loader.dart';
 
 
 class OnboardingAuth extends StatelessWidget {
@@ -51,15 +52,14 @@ class OnboardingAuth extends StatelessWidget {
               SocialButton(
                 imagePath: "assets/Google.png",
                 buttonText: "Continue with Google",
-                onTap: authController.signInWithGoogle,
+                onTap: () {
+                  CustomLoader.showLoadingDialog(context);
+                  authController.signInWithGoogle().whenComplete(() {
+                    CustomLoader.hideLoadingDialog(context);
+                  });
+                },
               ),
-              SizedBox(height: 20.h),
-              SocialButton(
-                imagePath: "assets/fb.png",
-                buttonText: "Continue with Facebook",
-                onTap: authController.signInWithFacebook,
-              ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 25.h),
               SocialButton(
                 imagePath: "assets/apple.png",
                 buttonText: "Continue with Apple",
