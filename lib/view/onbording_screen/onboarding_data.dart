@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:visionhr/widgets/roundedButton.dart';
-
 import '../../utils/colors.dart';
 import '../lets_started/lets_startded.dart';
 import 'onboarding_data_component/HealthReminderPicker.dart';
@@ -12,7 +11,6 @@ import 'onboarding_data_component/weight.dart';
 
 class OnboardingData extends StatefulWidget {
   const OnboardingData({Key? key}) : super(key: key);
-
   @override
   State<OnboardingData> createState() => _OnboardingDataState();
 }
@@ -57,7 +55,7 @@ class _OnboardingDataState extends State<OnboardingData> {
             mainAxisSize: MainAxisSize.min,
             children: [
               CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.orange),
               ),
               const SizedBox(height: 20),
               Text(

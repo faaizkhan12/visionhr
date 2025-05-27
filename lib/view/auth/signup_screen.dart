@@ -23,6 +23,8 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController password = TextEditingController();
   final TextEditingController confirmPassword = TextEditingController();
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -227,16 +229,18 @@ class SignupScreen extends StatelessWidget {
                       SocialButton(
                         imagePath: "assets/Google.png",
                         width: 90,
-                        onTap: () {
+                        onTap: () async {
                           CustomLoader.showLoadingDialog(context);
-                          authController.signInWithGoogle().whenComplete(() {
-                            CustomLoader.hideLoadingDialog(context);
-                          });
+                          final success = await authController.signInWithGoogle();
+                          CustomLoader.hideLoadingDialog(context);
+                          if (success) {
+                            Get.off(() => const Onboarding_Screen());
+                          }
                         },
                       ),
                       SocialButton(
                         imagePath: "assets/apple.png",
-                        onTap: authController.signInWithApple,
+                        onTap: (){},
                         width: 90,
                       ),
                     ],

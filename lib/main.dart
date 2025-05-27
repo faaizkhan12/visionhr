@@ -7,9 +7,6 @@ import 'package:get/get.dart';
 import 'package:visionhr/utils/colors.dart';
 import 'package:visionhr/view/splash_screen/splash_screen.dart';
 
-
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Platform.isIOS

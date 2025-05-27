@@ -206,11 +206,18 @@ class _SiginScreenState extends State<SiginScreen> {
                       SocialButton(
                         imagePath: "assets/Google.png",
                         width: 90,
-                        onTap: authController.signInWithGoogle,
+                        onTap: () async {
+                          CustomLoader.showLoadingDialog(context);
+                          final success = await authController.signInWithGoogle();
+                          CustomLoader.hideLoadingDialog(context);
+                          if (success) {
+                            Get.off(() => const Onboarding_Screen());
+                          }
+                        },
                       ),
                       SocialButton(
                         imagePath: "assets/apple.png",
-                        onTap: authController.signInWithApple,
+                        onTap: (){},
                         width: 90,
                       ),
                     ],

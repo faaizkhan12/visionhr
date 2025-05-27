@@ -10,6 +10,7 @@ import 'package:visionhr/widgets/socialbutton.dart';
 
 import '../../controller/auth_controller.dart';
 import '../../widgets/loader.dart';
+import '../onbording_screen/onbording_screen.dart';
 
 
 class OnboardingAuth extends StatelessWidget {
@@ -18,6 +19,7 @@ class OnboardingAuth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authController = Get.put(AuthController());
+
 
     return Scaffold(
       body: SafeArea(
@@ -49,21 +51,24 @@ class OnboardingAuth extends StatelessWidget {
                 color: AppColors.txtgrey,
               ),
               SizedBox(height: 40.h),
-              SocialButton(
-                imagePath: "assets/Google.png",
-                buttonText: "Continue with Google",
-                onTap: () {
-                  CustomLoader.showLoadingDialog(context);
-                  authController.signInWithGoogle().whenComplete(() {
-                    CustomLoader.hideLoadingDialog(context);
-                  });
-                },
-              ),
+          SocialButton(
+            imagePath: "assets/Google.png",
+            buttonText: "Continue with Google",
+            onTap: () async {
+              CustomLoader.showLoadingDialog(context);
+              final success = await authController.signInWithGoogle();
+              CustomLoader.hideLoadingDialog(context);
+              if (success) {
+                Get.off(() => const Onboarding_Screen());
+              }
+            },
+          ),
+
               SizedBox(height: 25.h),
               SocialButton(
                 imagePath: "assets/apple.png",
                 buttonText: "Continue with Apple",
-                onTap: authController.signInWithApple,
+                onTap: (){},
               ),
               SizedBox(height: 30.h),
               Row(

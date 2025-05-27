@@ -14,6 +14,7 @@ class TxtField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final String? labelText; // New
   final bool showLabelText; // New
+  final TextInputType keyboardType;
 
   const TxtField({
     Key? key,
@@ -26,6 +27,7 @@ class TxtField extends StatefulWidget {
     this.validator,
     this.labelText, // New
     this.showLabelText = false, // New
+    this.keyboardType = TextInputType.text,
   }) : super(key: key);
 
   @override
@@ -62,6 +64,7 @@ class _TxtFieldState extends State<TxtField> {
             child: TextFormField(
               controller: widget.controller,
               obscureText: _obscureText && widget.showSuffixIcon,
+              keyboardType: widget.keyboardType,
               style: TextStyle(color: AppColors.txtcolr),
               decoration: InputDecoration(
                 border: InputBorder.none,
