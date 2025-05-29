@@ -4,6 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visionhr/utils/colors.dart';
 
 class BirthdayPickerScreen extends StatefulWidget {
+  final Function(DateTime) onBirthdaySelected;
+
+  const BirthdayPickerScreen({Key? key, required this.onBirthdaySelected}) : super(key: key);
+
   @override
   State<BirthdayPickerScreen> createState() => _BirthdayPickerScreenState();
 }
@@ -16,6 +20,17 @@ class _BirthdayPickerScreenState extends State<BirthdayPickerScreen> {
   final List<int> months = List.generate(12, (index) => index + 1);
   final List<int> days = List.generate(31, (index) => index + 1);
   final List<int> years = List.generate(100, (index) => 2025 - index);
+
+  void _updateBirthday() {
+    final birthday = DateTime(selectedYear, selectedMonth, selectedDay);
+    widget.onBirthdaySelected(birthday);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _updateBirthday(); // Initialize with default date
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +55,22 @@ class _BirthdayPickerScreenState extends State<BirthdayPickerScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildPicker("Month", months, selectedMonth, (val) {
-                    setState(() => selectedMonth = val);
+                    setState(() {
+                      selectedMonth = val;
+                      _updateBirthday();
+                    });
                   }),
                   _buildPicker("Day", days, selectedDay, (val) {
-                    setState(() => selectedDay = val);
+                    setState(() {
+                      selectedDay = val;
+                      _updateBirthday();
+                    });
                   }),
                   _buildPicker("Year", years, selectedYear, (val) {
-                    setState(() => selectedYear = val);
+                    setState(() {
+                      selectedYear = val;
+                      _updateBirthday();
+                    });
                   }),
                 ],
               ),
@@ -72,16 +96,7 @@ class _BirthdayPickerScreenState extends State<BirthdayPickerScreen> {
               },
               backgroundColor: Colors.transparent,
               children: items
-                  .map((val) => Center(
-                child: Text(
-                  val.toString().padLeft(2, '0'),
-                  style: TextStyle(
-                    color: val == selectedValue ? AppColors.orange : Colors.white,
-                    fontSize: 30.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ))
+                  .map((val) => Center(child: Text(val.toString(), style: TextStyle(color: Colors.white, fontSize: 18.sp))))
                   .toList(),
             ),
           ),

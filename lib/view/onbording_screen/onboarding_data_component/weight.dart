@@ -4,6 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visionhr/utils/colors.dart';
 
 class WeightPickerScreen extends StatefulWidget {
+  final Function(double)? onWeightSelected; // Callback to pass weight
+
+  const WeightPickerScreen({Key? key, this.onWeightSelected}) : super(key: key);
+
   @override
   State<WeightPickerScreen> createState() => _WeightPickerScreenState();
 }
@@ -15,87 +19,88 @@ class _WeightPickerScreenState extends State<WeightPickerScreen> {
   final List<int> weights = List.generate(100, (index) => 30 + index);
 
   @override
+  void initState() {
+    super.initState();
+    // Initial callback
+    widget.onWeightSelected?.call(selectedWeight.toDouble());
+  }
+
+  void _handleWeightChange(int index) {
+    setState(() {
+      selectedWeight = weights[index];
+    });
+    widget.onWeightSelected?.call(selectedWeight.toDouble());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
+    return Container(
+      color: Colors.black,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Column(
+        children: [
+          SizedBox(height: 20.h),
+          Text(
+            "What's your body weight?",
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 20.h),
-              Text(
-                "What's your body weight?",
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _unitButton("kg", isKg),
-                  SizedBox(width: 12.w),
-                  _unitButton("lb", !isKg),
-                ],
-              ),
-              SizedBox(height: 10.h),
-              Expanded(
-                child: CupertinoPicker(
-                  itemExtent: 50.h,
-                  scrollController: FixedExtentScrollController(
-                      initialItem: weights.indexOf(selectedWeight)),
-                  onSelectedItemChanged: (index) {
-                    setState(() {
-                      selectedWeight = weights[index];
-                    });
-                  },
-                  backgroundColor: Colors.transparent,
-                  children: weights
-                      .map((val) => Center(
-                    child: Text(
-                      "$val ${isKg ? "kg" : "lb"}",
-                      style: TextStyle(
-                        color: val == selectedWeight
-                            ? AppColors.orange
-                            : Colors.white,
-                        fontSize: 28.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ))
-                      .toList(),
-                ),
-              ),
+              _unitButton("kg", isKg),
+              SizedBox(width: 12.w),
+              _unitButton("lb", !isKg),
             ],
           ),
-        ),
+          SizedBox(height: 10.h),
+          Expanded(
+            child: CupertinoPicker(
+              backgroundColor: Colors.black,
+              itemExtent: 50.h,
+              scrollController: FixedExtentScrollController(
+                initialItem: weights.indexOf(selectedWeight),
+              ),
+              onSelectedItemChanged: _handleWeightChange,
+              children: weights
+                  .map((weight) => Center(
+                child: Text(
+                  '$weight ${isKg ? "kg" : "lb"}',
+                  style: TextStyle(color: Colors.white, fontSize: 20.sp),
+                ),
+              ))
+                  .toList(),
+            ),
+          ),
+          SizedBox(height: 30.h),
+        ],
       ),
     );
   }
 
-  Widget _unitButton(String unit, bool selected) {
+  Widget _unitButton(String label, bool selected) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          isKg = unit == "kg";
+          isKg = label == "kg";
         });
+        widget.onWeightSelected?.call(selectedWeight.toDouble());
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
         decoration: BoxDecoration(
-          color: selected ? AppColors.orange : Colors.transparent,
-          borderRadius: BorderRadius.circular(30.r),
-          border: Border.all(color: AppColors.orange),
+          color: selected ? AppColors.orange : Colors.grey.shade800,
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: Text(
-          unit,
+          label,
           style: TextStyle(
-            color: selected ? Colors.white : AppColors.orange,
             fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
         ),
       ),

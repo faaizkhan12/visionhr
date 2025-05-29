@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:visionhr/view/auth/onboardingAuth.dart';
+import 'package:visionhr/view/onbording_screen/onbording_screen.dart';
 import '../navigationbar/navigationbar.dart';
 
 class KeepLogin extends StatelessWidget {
@@ -13,7 +14,7 @@ class KeepLogin extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
           // User is logged in
-          return Navigationbar();
+          return Onboarding_Screen();
         } else {
           // User is not logged in
           return OnboardingAuth();
